@@ -1,10 +1,10 @@
+
 const redisClient = require('../config/redis');
 const User = require('../models/user');
 const validate = require('../utill/validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Submission = require('../models/submission');
-
 
 const getTokenFromRequest = (req) => {
     const authHeader = req.headers?.authorization;
@@ -28,7 +28,12 @@ const issueAuthToken = (res, user, emailId) => {
         { expiresIn: 60 * 60 }
     );
 
-    res.cookie('token', token, { maxAge: 60 * 60 * 1000 });
+    res.cookie('token', token, {
+        maxAge: 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+    });
 
     return token;
 };
@@ -50,18 +55,19 @@ const createRegisterHandler = (role = 'user') => async (req, res) => {
         });
 
         const token = issueAuthToken(res, user, emailId);
+
         const reply = {
-          firstName: user.firstName,
-          emailId: user.emailId,
-          _id: user._id,
-          role: user.role,
+            firstName: user.firstName,
+            emailId: user.emailId,
+            _id: user._id,
+            role: user.role,
         };
 
         res.status(201).json({
-          message: "Registered successfully",
-          token,
-          role: user.role,
-          user: reply,
+            message: "Registered successfully",
+            token,
+            role: user.role,
+            user: reply,
         });
     } catch (err) {
         res.status(400).send("Error: " + err.message);
@@ -92,19 +98,19 @@ const login = async (req, res) => {
         }
 
         const reply = {
-          firstName: user.firstName,
-          emailId: user.emailId,
-          _id: user._id,
-          role: user.role,
+            firstName: user.firstName,
+            emailId: user.emailId,
+            _id: user._id,
+            role: user.role,
         };
 
         const token = issueAuthToken(res, user, emailId);
 
         res.status(200).json({
-          message: "Logged in Successfully",
-          token,
-          role: user.role,
-          user: reply,
+            message: "Logged in Successfully",
+            token,
+            role: user.role,
+            user: reply,
         });
     } catch (err) {
         res.status(401).send("Error: " + err.message);
@@ -124,8 +130,16 @@ const logout = async (req, res) => {
             await redisClient.setEx(`token:${token}`, ttlInSeconds, 'blocked');
         }
 
-        res.cookie('token', '', { maxAge: 0 });
-        res.status(201).json({ message: "Logged out successfully" });
+        res.cookie('token', '', {
+            maxAge: 0,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        });
+
+        res.status(201).json({
+            message: "Logged out successfully"
+        });
     } catch (err) {
         res.status(500).send("Error: " + err.message);
     }
@@ -149,10 +163,10 @@ const deleteProfile = async (req, res) => {
 
         await User.findByIdAndDelete(userId);
         await Submission.deleteMany({ userId });
+
         res.status(200).send("Profile deleted successfully");
     } catch (err) {
         res.status(500).send("Internal Server Error");
-
     }
 };
 

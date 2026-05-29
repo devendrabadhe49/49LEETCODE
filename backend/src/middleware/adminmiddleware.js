@@ -30,49 +30,48 @@ const isTokenBlocked = async (token) => {
     }
 };
 
-const adminMiddleware = async (req,res,next)=>{
+const adminMiddleware = async (req, res, next) => {
+    try {
 
-    try{
+        console.log("COOKIE TOKEN:", req.cookies?.token);
+        console.log("AUTH HEADER:", req.headers?.authorization);
 
         const token = getTokenFromRequest(req);
-        if(!token)
+
+        if (!token)
             throw new Error("Token is not present");
 
-        const payload = jwt.verify(token,process.env.JWT_KEY);
+        const payload = jwt.verify(token, process.env.JWT_KEY);
 
-        const {_id} = payload;
+        const { _id } = payload;
 
-        if(!_id){
+        if (!_id) {
             throw new Error("Invalid token");
         }
 
         const result = await User.findById(_id);
 
-        if(!result){
+        if (!result) {
             throw new Error("User Doesn't Exist");
         }
 
-        if(result.role !== 'admin')
+        if (result.role !== 'admin')
             throw new Error("Admin access required");
-
-        // Redis ke blockList mein persent toh nahi hai
 
         const IsBlocked = await isTokenBlocked(token);
 
-        if(IsBlocked)
+        if (IsBlocked)
             throw new Error("Invalid Token");
 
         req.user = result;
         req.result = result;
 
-
         next();
-    }
-    catch(err){
-        res.status(401).send("Error: "+ err.message)
-    }
 
-}
-
+    } catch (err) {
+        console.error("ADMIN MIDDLEWARE ERROR:", err.message);
+        res.status(401).send("Error: " + err.message);
+    }
+};
 
 module.exports = adminMiddleware;
