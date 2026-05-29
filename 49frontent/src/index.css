@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-body: "Inter", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --brand-start: #0f172a;
+  --brand-mid: #334155;
+  --brand-end: #0ea5e9;
+  --text-strong: #0f172a;
+  --text-soft: #475569;
+  color-scheme: light;
+}
+
+html {
+  min-height: 100%;
+  background-color: #f8fafc;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text-strong);
+  background:
+    radial-gradient(circle at top left, rgba(14, 165, 233, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(15, 23, 42, 0.1), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+}
+
+.brand-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.brand-kicker {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.brand-wordmark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  background: linear-gradient(135deg, var(--brand-start) 0%, var(--brand-mid) 56%, var(--brand-end) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 18px 36px rgba(15, 23, 42, 0.12);
+}
+
+.brand-wordmark--sm {
+  font-size: clamp(1.7rem, 1.25rem + 1.1vw, 2.35rem);
+}
+
+.brand-wordmark--md {
+  font-size: clamp(2.9rem, 2.3rem + 1.8vw, 4.2rem);
+}
+
+.brand-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-soft);
+}
+
+.brand-nav-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(14px);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.brand-nav-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.12);
+}
+
+.brand-card {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+@keyframes page-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes panel-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(-10px, 12px, 0);
+  }
+}
+
+@keyframes tab-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-page-rise {
+  animation: page-rise 520ms ease-out both;
+}
+
+.animate-panel-rise {
+  animation: panel-rise 640ms ease-out both;
+}
+
+.animate-gentle-float {
+  animation: gentle-float 7s ease-in-out infinite;
+}
+
+.animate-tab-fade {
+  animation: tab-fade 260ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-page-rise,
+  .animate-panel-rise,
+  .animate-gentle-float,
+  .animate-tab-fade {
+    animation: none;
+  }
+}
